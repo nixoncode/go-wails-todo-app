@@ -7,12 +7,17 @@ import (
 
 // App struct
 type App struct {
-	ctx context.Context
+	ctx   context.Context
+	store Store
 }
 
 // NewApp creates a new App application struct
 func NewApp() *App {
-	return &App{}
+	store := NewInMemoryStore()
+	// Initialize the store with some data
+	return &App{
+		store: store,
+	}
 }
 
 // startup is called when the app starts. The context is saved
