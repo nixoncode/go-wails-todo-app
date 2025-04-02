@@ -16,9 +16,12 @@ function App() {
     
     useEffect(() => {
         const fetchTodos = async () => {
+            try {
             const allTodos = await GetAllTodos();
-            console.log(allTodos);
-            setTodos(allTodos);
+            setTodos(allTodos || []);
+            }catch (error) {
+                console.error("Error fetching todos:", error);
+            }
         }
         fetchTodos();
     }, []);
