@@ -21,7 +21,7 @@ func NewInMemoryStore() *InMemoryStore {
 }
 
 // Add adds an item to the store
-func (s *InMemoryStore) Add(ctx context.Context, item Item) error {
+func (s *InMemoryStore) Add(ctx context.Context, item Item) (Item, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -29,7 +29,7 @@ func (s *InMemoryStore) Add(ctx context.Context, item Item) error {
 	s.items[s.nextID] = item
 	s.nextID++
 
-	return nil
+	return item, nil
 }
 
 // Get retrieves an item by ID

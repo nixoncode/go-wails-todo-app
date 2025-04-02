@@ -1,54 +1,67 @@
-import {useState} from 'react';
-//import {Greet} from "../wailsjs/go/main/App";
+import {useState, useEffect} from 'react';
+import {GetAllTodos, AddTodo, DeleteTodo} from "../wailsjs/go/main/App";
+import {Item}  from "../wailsjs/go/models";
 import {Button} from "./components/ui/button";
 import {Input} from "./components/ui/input";
 import {Plus, CheckCircle2, Circle, X} from "lucide-react";
 import {cn} from "./lib/utils";
 
 
-type Todo = {
-    id: number
-    text: string
-    completed: boolean
-}
+
 
 function App() {
-    const [todos, setTodos] = useState<Todo[]>([])
+    const [todos, setTodos] = useState<Item[]>([])
     const [newTodo, setNewTodo] = useState("")
     const [filter, setFilter] = useState<"all" | "active" | "completed">("all")
     
+    useEffect(() => {
+        const fetchTodos = async () => {
+            const allTodos = await GetAllTodos();
+            console.log(allTodos);
+            setTodos(allTodos);
+        }
+        fetchTodos();
+    }, []);
 
-    const addTodo = (e: React.FormEvent) => {
+    const addTodo = async (e: React.FormEvent) => {
         e.preventDefault()
         if (newTodo.trim() === "") return
+
+        const newTodoItem: Item = {
+            name: newTodo.trim(),
+            is_done: false,
+        }
+       const item  = await AddTodo(newTodoItem);
     
         setTodos([
           ...todos,
-          {
-            id: Date.now(),
-            text: newTodo.trim(),
-            completed: false,
-          },
+            item,
         ])
         setNewTodo("")
       }
     
   const toggleTodo = (id: number) => {
-    setTodos(todos.map((todo) => (todo.id === id ? { ...todo, completed: !todo.completed } : todo)))
+    setTodos(todos.map((todo) => (todo.id === id ? { ...todo, is_done: !todo.is_done } : todo)))
   }
 
   const deleteTodo = (id: number) => {
+    // Call the backend function to delete the todo
+    DeleteTodo(id)
+    // Update the state to remove the deleted todo
     setTodos(todos.filter((todo) => todo.id !== id))
   }
 
-  const completedCount = todos.filter((todo) => todo.completed).length
+  const completedCount = todos.filter((todo) => todo.is_done).length
   const totalCount = todos.length
 
   const filteredTodos = todos.filter((todo) => {
-    if (filter === "active") return !todo.completed
-    if (filter === "completed") return todo.completed
+    if (filter === "active") return !todo.is_done
+    if (filter === "completed") return todo.is_done
     return true
   });
+
+
+
 
     return (
         <div className="max-w-md mx-auto p-4 space-y-4">
@@ -98,9 +111,9 @@ function App() {
             <li key={todo.id} className="flex items-center justify-between p-3 border rounded-md">
               <div className="flex items-center space-x-3">
                 <Button variant="ghost" size="icon" onClick={() => toggleTodo(todo.id)} className="h-8 w-8">
-                  {todo.completed ? <CheckCircle2 className="h-5 w-5 text-primary" /> : <Circle className="h-5 w-5" />}
+                  {todo.is_done ? <CheckCircle2 className="h-5 w-5 text-primary" /> : <Circle className="h-5 w-5" />}
                 </Button>
-                <span className={cn("text-sm", todo.completed && "line-through text-muted-foreground")}>{todo.text}</span>
+                <span className={cn("text-sm", todo.is_done && "line-through text-muted-foreground")}>{todo.name}</span>
               </div>
               <Button
                 variant="ghost"

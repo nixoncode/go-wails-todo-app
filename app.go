@@ -25,6 +25,27 @@ func NewApp() *App {
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 	fmt.Println("App is starting up...")
+
+	// initialize store with demo items
+	demoItems := []Item{
+
+		{ID: 2, Name: "Buy groceries", IsDone: false},
+		{ID: 3, Name: "Clean the house", IsDone: true},
+		{ID: 4, Name: "Finish homework", IsDone: false},
+	}
+	for _, item := range demoItems {
+		_, err := a.store.Add(ctx, item)
+		if err != nil {
+			fmt.Printf("Error adding item: %v\n", err)
+		}
+	}
+	// Print the number of items in the store
+	count, err := a.store.Count(ctx)
+	if err != nil {
+		fmt.Printf("Error counting items: %v\n", err)
+	} else {
+		fmt.Printf("Number of items in store: %d\n", count)
+	}
 }
 
 func (a *App) shutdown(ctx context.Context) {

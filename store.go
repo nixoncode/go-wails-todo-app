@@ -3,7 +3,7 @@ package main
 import "context"
 
 type Store interface {
-	Add(ctx context.Context, item Item) error
+	Add(ctx context.Context, item Item) (Item, error)
 	Get(ctx context.Context, id int) (Item, error)
 	GetAll(ctx context.Context) ([]Item, error)
 	Update(ctx context.Context, item Item) error

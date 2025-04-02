@@ -1,6 +1,9 @@
 package main
 
-func (a *App) AddTodo(todo Item) error {
+import "fmt"
+
+func (a *App) AddTodo(todo Item) (Item, error) {
+	fmt.Println("Adding todo item:", todo)
 	return a.store.Add(a.ctx, todo)
 }
 

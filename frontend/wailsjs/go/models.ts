@@ -1,9 +1,9 @@
 export namespace main {
 	
 	export class Item {
-	    ID: number;
-	    Name: string;
-	    IsDone: boolean;
+	    id: number;
+	    name: string;
+	    is_done: boolean;
 	
 	    static createFrom(source: any = {}) {
 	        return new Item(source);
@@ -11,9 +11,9 @@ export namespace main {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.ID = source["ID"];
-	        this.Name = source["Name"];
-	        this.IsDone = source["IsDone"];
+	        this.id = source["id"];
+	        this.name = source["name"];
+	        this.is_done = source["is_done"];
 	    }
 	}
 
